@@ -1,0 +1,12 @@
+.env
+.env.*
+*.local
+*.log
+*.exe
+*.out
+bin/
+tmp/
+coverage/
+sunstrike.db
+sunstrike.db-shm
+sunstrike.db-wal

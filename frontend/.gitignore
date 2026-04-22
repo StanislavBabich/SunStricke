@@ -1,0 +1,21 @@
+node_modules/
+dist/
+.vite/
+.env
+.env.*
+*.local
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Image sources and generated assets
+source-images/
+public/assets/
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.gif
+*.svg
