@@ -1,5 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { getCurrentUser } from "../api";
+import { formatLightingKm2 } from "../lib/lightingZone";
+import { formatLightingUsd } from "../lib/lightingPricing";
+import HistoryMapThumb from "./HistoryMapThumb";
+import RatingStarsGiven from "./RatingStarsGiven";
 
 const CLOSE_ANIMATION_MS = 240;
 
@@ -25,6 +29,11 @@ function normalizeProfile(profile) {
   };
 }
 
+function dateLocaleForUi(code) {
+  const map = { ru: "ru-RU", de: "de-DE", zh: "zh-CN", en: "en-US", fr: "fr-FR" };
+  return map[code] || "ru-RU";
+}
+
 function applyMask(template, digits, placeholder = "*") {
   let index = 0;
   return template.replace(new RegExp(`\\${placeholder}`, "g"), () => {
@@ -34,7 +43,17 @@ function applyMask(template, digits, placeholder = "*") {
   });
 }
 
-export default function ProfileModal({ isOpen, onClose, userProfile, onSaveProfile, onTopUpBalance, translations }) {
+export default function ProfileModal({
+  isOpen,
+  onClose,
+  userProfile,
+  userReviews = [],
+  userApplications = [],
+  languageCode = "ru",
+  onSaveProfile,
+  onTopUpBalance,
+  translations
+}) {
   const [shouldRender, setShouldRender] = useState(isOpen);
   const [isClosing, setIsClosing] = useState(false);
   const [activeSection, setActiveSection] = useState("profile");
@@ -51,6 +70,8 @@ export default function ProfileModal({ isOpen, onClose, userProfile, onSaveProfi
     cardCvc: "",
     amount: ""
   });
+  const [supportMessage, setSupportMessage] = useState("");
+  const [expandedReviewIds, setExpandedReviewIds] = useState({});
   const fileInputRef = useRef(null);
   const dragStateRef = useRef(null);
 
@@ -77,10 +98,16 @@ export default function ProfileModal({ isOpen, onClose, userProfile, onSaveProfi
     setProfileDraft(normalized);
     setEditStartProfile(normalized);
     setPasswordTouched(false);
+  }, [isOpen, userProfile]);
+
+  useEffect(() => {
+    if (!isOpen) return;
     setActiveSection("profile");
     setTopUpForm({ cardNumber: "", cardName: "", cardExpiry: "", cardCvc: "", amount: "" });
+    setSupportMessage("");
     setError("");
-  }, [isOpen, userProfile]);
+    setExpandedReviewIds({});
+  }, [isOpen]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -128,6 +155,11 @@ export default function ProfileModal({ isOpen, onClose, userProfile, onSaveProfi
   if (!shouldRender) return null;
   const isEditing = activeSection === "edit";
   const isBalanceMode = activeSection === "balance";
+  const isSupportMode = activeSection === "support";
+  const isReviewsMode = activeSection === "reviews";
+  const isHistoryMode = activeSection === "history";
+  const showProfileSummary = activeSection === "profile" || activeSection === "edit";
+  const isStandalonePanel = isBalanceMode || isSupportMode || isReviewsMode || isHistoryMode;
 
   const hasBaseChanges =
     profileDraft.nickname.trim() !== initialProfile.nickname.trim() ||
@@ -177,6 +209,7 @@ export default function ProfileModal({ isOpen, onClose, userProfile, onSaveProfi
     setProfileDraft({ ...editStartProfile, newPassword: "", repeatPassword: "" });
     setPasswordTouched(false);
     setTopUpForm({ cardNumber: "", cardName: "", cardExpiry: "", cardCvc: "", amount: "" });
+    setSupportMessage("");
     setError("");
     setActiveSection("profile");
   };
@@ -184,6 +217,29 @@ export default function ProfileModal({ isOpen, onClose, userProfile, onSaveProfi
   const handleOpenTopUp = () => {
     setActiveSection("balance");
     setError("");
+  };
+
+  const handleOpenSupport = () => {
+    setActiveSection("support");
+    setError("");
+  };
+
+  const handleOpenReviews = () => {
+    setActiveSection("reviews");
+    setError("");
+  };
+
+  const handleOpenHistory = () => {
+    setActiveSection("history");
+    setError("");
+  };
+
+  const toggleReviewExpanded = (id) => {
+    setExpandedReviewIds((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const handleSupportSend = () => {
+    setSupportMessage("");
   };
 
   const handleDraftChange = (event) => {
@@ -324,9 +380,9 @@ export default function ProfileModal({ isOpen, onClose, userProfile, onSaveProfi
     { key: "profile", label: translations.modal.profile.profileTab, onClick: handleOpenProfileView },
     { key: "edit", label: translations.modal.profile.action1, onClick: handleStartEdit },
     { key: "balance", label: translations.modal.profile.topUpBalance, onClick: handleOpenTopUp },
-    { key: "history", label: translations.modal.profile.action2 },
-    { key: "support", label: translations.modal.profile.action3 },
-    { key: "reviews", label: translations.modal.profile.reviews }
+    { key: "history", label: translations.modal.profile.action2, onClick: handleOpenHistory },
+    { key: "support", label: translations.modal.profile.action3, onClick: handleOpenSupport },
+    { key: "reviews", label: translations.modal.profile.reviews, onClick: handleOpenReviews }
   ];
 
   return (
@@ -345,39 +401,45 @@ export default function ProfileModal({ isOpen, onClose, userProfile, onSaveProfi
         <div className="profile-modal__body" style={{ "--profile-menu-count": profileMenuButtons.length }}>
           <div className="profile-modal__right">
             {profileMenuButtons.map((item) => (
-              <button key={item.key} type="button" onClick={item.onClick}>
+              <button key={item.key} type="button" onClick={() => item.onClick?.()}>
                 {item.label}
               </button>
             ))}
           </div>
 
-          <div className={`profile-modal__left ${isEditing ? "is-editing" : "is-view"}`}>
-            <button
-              type="button"
-              className={`profile-modal__avatar-placeholder ${profileDraft.avatarData ? "has-image" : ""} ${isEditing ? "is-editing" : ""}`}
-              onPointerDown={handleAvatarPointerDown}
-              onClick={() => isEditing && fileInputRef.current?.click()}
-              style={avatarStyle}
-            />
-            {isEditing && (
-              <div className="profile-modal__avatar-tools">
-                <p className="profile-modal__hint">{translations.modal.profile.uploadHint}</p>
+          <div
+            className={`profile-modal__left ${isEditing ? "is-editing" : "is-view"} ${isStandalonePanel ? "is-standalone-tab" : ""} ${isSupportMode ? "is-support-tab" : ""} ${isReviewsMode ? "is-reviews-tab" : ""} ${isHistoryMode ? "is-history-tab" : ""}`}
+          >
+            {showProfileSummary && (
+              <>
                 <button
                   type="button"
-                  className="profile-modal__avatar-delete"
-                  onClick={handleRemoveAvatar}
-                  disabled={!profileDraft.avatarData}
-                  aria-label={translations.modal.profile.deleteAvatar}
-                >
-                  <img src="/assets/auth-delete.svg" alt="" />
-                </button>
-              </div>
+                  className={`profile-modal__avatar-placeholder ${profileDraft.avatarData ? "has-image" : ""} ${isEditing ? "is-editing" : ""}`}
+                  onPointerDown={handleAvatarPointerDown}
+                  onClick={() => isEditing && fileInputRef.current?.click()}
+                  style={avatarStyle}
+                />
+                {isEditing && (
+                  <div className="profile-modal__avatar-tools">
+                    <p className="profile-modal__hint">{translations.modal.profile.uploadHint}</p>
+                    <button
+                      type="button"
+                      className="profile-modal__avatar-delete"
+                      onClick={handleRemoveAvatar}
+                      disabled={!profileDraft.avatarData}
+                      aria-label={translations.modal.profile.deleteAvatar}
+                    >
+                      <img src="/assets/auth-delete.svg" alt="" />
+                    </button>
+                  </div>
+                )}
+                <p className="profile-modal__nickname">{profileDraft.nickname || "-"}</p>
+                <p className="profile-modal__email">{profileDraft.email || "-"}</p>
+                <p className="profile-modal__balance">
+                  {translations.modal.profile.balanceLabel} ${currentBalance}
+                </p>
+              </>
             )}
-            <p className="profile-modal__nickname">{profileDraft.nickname || "-"}</p>
-            <p className="profile-modal__email">{profileDraft.email || "-"}</p>
-            <p className="profile-modal__balance">
-              {translations.modal.profile.balanceLabel} ${currentBalance}
-            </p>
             {isEditing && (
               <div className="profile-modal__left-form">
                 <input
@@ -472,6 +534,135 @@ export default function ProfileModal({ isOpen, onClose, userProfile, onSaveProfi
                     {translations.modal.profile.cancel}
                   </button>
                 </div>
+              </div>
+            )}
+            {isSupportMode && (
+              <div className="profile-modal__left-form profile-modal__support-form">
+                <textarea
+                  className="profile-modal__support-text"
+                  rows={8}
+                  value={supportMessage}
+                  onChange={(event) => setSupportMessage(event.target.value)}
+                  placeholder={translations.modal.profile.supportPlaceholder}
+                  aria-label={translations.modal.profile.supportPlaceholder}
+                />
+                <div className="profile-modal__actions">
+                  <button type="button" onClick={handleSupportSend}>
+                    {translations.modal.profile.supportSend}
+                  </button>
+                </div>
+              </div>
+            )}
+            {isReviewsMode && (
+              <div className="profile-modal__reviews-panel">
+                {userReviews.length === 0 ? (
+                  <p className="profile-modal__reviews-empty">{translations.modal.profile.reviewsEmpty}</p>
+                ) : (
+                  <ul className="profile-modal__reviews-list" aria-label={translations.modal.profile.reviews}>
+                    {userReviews.map((rev) => {
+                      const expanded = Boolean(expandedReviewIds[rev.id]);
+                      const textTrim = rev.text?.trim() ?? "";
+                      const hasText = Boolean(textTrim);
+                      return (
+                        <li key={rev.id} className={`profile-modal__review-row${expanded ? " is-expanded" : ""}`}>
+                          <div className="profile-modal__review-stars-rail" aria-hidden="true">
+                            <RatingStarsGiven rating={rev.rating} size={18} slotCount={5} />
+                          </div>
+                          <div className="profile-modal__review-main">
+                            {hasText ? (
+                              <button
+                                type="button"
+                                className={`profile-modal__review-text${expanded ? " profile-modal__review-text--expanded" : ""}`}
+                                onClick={() => toggleReviewExpanded(rev.id)}
+                                aria-expanded={expanded}
+                                aria-label={
+                                  expanded
+                                    ? translations.modal.profile.reviewCollapse
+                                    : translations.modal.profile.reviewExpand
+                                }
+                              >
+                                {textTrim}
+                              </button>
+                            ) : (
+                              <span className="profile-modal__review-no-text" />
+                            )}
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </div>
+            )}
+            {isHistoryMode && (
+              <div className="profile-modal__history-panel">
+                {userApplications.length === 0 ? (
+                  <p className="profile-modal__history-empty">{translations.modal.profile.historyEmpty}</p>
+                ) : (
+                  <ul className="profile-modal__history-list" aria-label={translations.modal.profile.action2}>
+                    {userApplications.map((app) => {
+                      const le = translations.locationExplorer ?? {};
+                      const d = new Date(app.at);
+                      const dateStr = Number.isFinite(d.getTime())
+                        ? d.toLocaleString(dateLocaleForUi(languageCode), {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit"
+                          })
+                        : "—";
+                      const mapOk =
+                        Number.isFinite(app.centerLat) &&
+                        Number.isFinite(app.centerLng) &&
+                        Number.isFinite(app.radiusMeters) &&
+                        app.radiusMeters > 0;
+                      return (
+                        <li key={app.id} className="profile-modal__history-row">
+                          <div className="profile-modal__history-map-wrap">
+                            {mapOk ? (
+                              <HistoryMapThumb
+                                centerLat={app.centerLat}
+                                centerLng={app.centerLng}
+                                radiusMeters={app.radiusMeters}
+                                languageCode={languageCode}
+                              />
+                            ) : (
+                              <div className="profile-modal__history-map-fallback" aria-hidden="true" />
+                            )}
+                          </div>
+                          <div className="profile-modal__history-details">
+                            <p className="profile-modal__history-date">{dateStr}</p>
+                            {app.address?.trim() ? (
+                              <p className="profile-modal__history-address">
+                                <span className="profile-modal__history-label">
+                                  {le.addressInputPlaceholder ?? "—"}
+                                </span>{" "}
+                                {app.address.trim()}
+                              </p>
+                            ) : null}
+                            <p className="profile-modal__history-line">
+                              <span className="profile-modal__history-label">{le.lightingAreaLabel ?? "—"}:</span>{" "}
+                              <span className="profile-modal__history-value">
+                                {formatLightingKm2(app.areaKm2, languageCode)} {le.lightingAreaUnit ?? ""}
+                              </span>
+                            </p>
+                            <p className="profile-modal__history-line">
+                              <span className="profile-modal__history-label">{le.lightingTimeLabel ?? "—"}:</span>{" "}
+                              <span className="profile-modal__history-value">
+                                {app.hours} {le.lightingTimeHoursSuffix ?? ""}
+                              </span>
+                            </p>
+                            <p className="profile-modal__history-line">
+                              <span className="profile-modal__history-label">{le.lightingSumLabel ?? "—"}:</span>{" "}
+                              <span className="profile-modal__history-value">${formatLightingUsd(app.amountUsd)}</span>
+                            </p>
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
               </div>
             )}
             <input

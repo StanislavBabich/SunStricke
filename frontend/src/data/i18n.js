@@ -19,11 +19,38 @@ export const TRANSLATIONS = {
       logoutButton: "Выйти",
       profileButton: "Профиль"
     },
+    locationExplorer: {
+      addressPrompt: "Введите адрес",
+      addressInputPlaceholder: "Адресс:",
+      lightingAreaLabel: "Площадь освещения",
+      lightingAreaUnit: "км²",
+      lightingTimeLabel: "Время",
+      lightingTimeHoursSuffix: "ч",
+      lightingSumLabel: "Сумма",
+      lightingPay: "Оплатить",
+      lightingInsufficientFunds: "Недостаточно средств",
+      reviewTitle: "Напишите Ваш отзыв",
+      reviewPlaceholder: "Ваш отзыв…",
+      reviewSend: "Отправить",
+      reviewCancel: "Отмена",
+      reviewCloseAria: "Закрыть",
+      reviewStarsGroupAria: "Оценка от 1 до 5",
+      reviewStarAria: "Звезда {n} из 5",
+      searching: "Поиск…",
+      noResults: "Ничего не найдено",
+      searchError: "Поиск не сработал. Попробуйте ещё раз."
+    },
     footer: {
       copyright: "® SunStrike, 2026. Все права защищены.",
       founded: "Компания основана в 1994 году.",
       follow: "Следите за нами тут",
       buttonAriaPrefix: "Футер-кнопка"
+    },
+    communityReviews: {
+      title: "Отзывы пользователей",
+      empty: "Пока нет отзывов после оплаты освещения. Оставьте первый — он появится здесь для всех.",
+      showAll: "Показать все",
+      averageRatingAria: "Средняя оценка пользователей {score} из 5"
     },
     modal: {
       titleRegister: "Регистрация в SunStrike",
@@ -75,7 +102,13 @@ export const TRANSLATIONS = {
         cardExpiryLabel: "Срок карты",
         cardCvcLabel: "Код с оборота",
         amountLabel: "Сумма $:",
-        pay: "Оплатить"
+        pay: "Оплатить",
+        supportPlaceholder: "Опишите проблему или вопрос…",
+        supportSend: "Отправить",
+        reviewsEmpty: "Пока нет отзывов. Оцените оплату освещения — отзыв появится здесь.",
+        reviewExpand: "Развернуть",
+        reviewCollapse: "Свернуть",
+        historyEmpty: "Пока нет заявок. После оплаты освещения запись появится здесь с картой и параметрами."
       }
     }
   },
@@ -89,11 +122,38 @@ export const TRANSLATIONS = {
       logoutButton: "Abmelden",
       profileButton: "Profil"
     },
+    locationExplorer: {
+      addressPrompt: "Adresse eingeben",
+      addressInputPlaceholder: "Adresse:",
+      lightingAreaLabel: "Beleuchtungsflache",
+      lightingAreaUnit: "km²",
+      lightingTimeLabel: "Dauer",
+      lightingTimeHoursSuffix: "Std.",
+      lightingSumLabel: "Summe",
+      lightingPay: "Bezahlen",
+      lightingInsufficientFunds: "Unzureichendes Guthaben",
+      reviewTitle: "Schreiben Sie Ihre Bewertung",
+      reviewPlaceholder: "Ihre Bewertung…",
+      reviewSend: "Senden",
+      reviewCancel: "Abbrechen",
+      reviewCloseAria: "Schliessen",
+      reviewStarsGroupAria: "Bewertung von 1 bis 5",
+      reviewStarAria: "Stern {n} von 5",
+      searching: "Suche…",
+      noResults: "Keine Treffer",
+      searchError: "Suche fehlgeschlagen. Bitte erneut versuchen."
+    },
     footer: {
       copyright: "® SunStrike, 2026. Alle Rechte vorbehalten.",
       founded: "Unternehmen gegrundet im Jahr 1994.",
       follow: "Folgen Sie uns hier",
       buttonAriaPrefix: "Footer-Schaltflache"
+    },
+    communityReviews: {
+      title: "Nutzerbewertungen",
+      empty: "Noch keine Bewertungen nach der Beleuchtungszahlung.",
+      showAll: "Alle anzeigen",
+      averageRatingAria: "Durchschnittsbewertung der Nutzer {score} von 5"
     },
     modal: {
       titleRegister: "Registrierung bei SunStrike",
@@ -144,7 +204,13 @@ export const TRANSLATIONS = {
         cardExpiryLabel: "Gultig bis",
         cardCvcLabel: "CVC",
         amountLabel: "Betrag $:",
-        pay: "Bezahlen"
+        pay: "Bezahlen",
+        supportPlaceholder: "Beschreiben Sie Ihr Problem oder Ihre Frage…",
+        supportSend: "Senden",
+        reviewsEmpty: "Noch keine Bewertungen. Nach der Beleuchtungszahlung erscheint Ihre Bewertung hier.",
+        reviewExpand: "Mehr",
+        reviewCollapse: "Weniger",
+        historyEmpty: "Noch keine Antrage. Nach der Beleuchtungszahlung erscheint der Eintrag hier mit Karte und Daten."
       }
     }
   },
@@ -158,11 +224,38 @@ export const TRANSLATIONS = {
       logoutButton: "退出",
       profileButton: "个人资料"
     },
+    locationExplorer: {
+      addressPrompt: "请输入地址",
+      addressInputPlaceholder: "地址：",
+      lightingAreaLabel: "照明区域",
+      lightingAreaUnit: "km²",
+      lightingTimeLabel: "时长",
+      lightingTimeHoursSuffix: "小时",
+      lightingSumLabel: "金额",
+      lightingPay: "支付",
+      lightingInsufficientFunds: "余额不足",
+      reviewTitle: "请写下您的评价",
+      reviewPlaceholder: "您的评价…",
+      reviewSend: "发送",
+      reviewCancel: "取消",
+      reviewCloseAria: "关闭",
+      reviewStarsGroupAria: "1 到 5 星评分",
+      reviewStarAria: "第 {n} 颗星，共 5 颗",
+      searching: "搜索中…",
+      noResults: "未找到结果",
+      searchError: "搜索失败，请稍后再试。"
+    },
     footer: {
       copyright: "® SunStrike，2026。保留所有权利。",
       founded: "公司成立于 1994 年。",
       follow: "在这里关注我们",
       buttonAriaPrefix: "页脚按钮"
+    },
+    communityReviews: {
+      title: "用户评价",
+      empty: "照明支付后尚无评价。",
+      showAll: "显示全部",
+      averageRatingAria: "用户平均评分 {score}，满分 5 分"
     },
     modal: {
       titleRegister: "注册 SunStrike",
@@ -213,7 +306,13 @@ export const TRANSLATIONS = {
         cardExpiryLabel: "有效期",
         cardCvcLabel: "安全码",
         amountLabel: "金额 $：",
-        pay: "支付"
+        pay: "支付",
+        supportPlaceholder: "请描述您的问题或疑问…",
+        supportSend: "发送",
+        reviewsEmpty: "暂无评价。完成照明支付并提交评价后，将显示在此处。",
+        reviewExpand: "展开",
+        reviewCollapse: "收起",
+        historyEmpty: "暂无记录。完成照明支付后，将在此显示地图与订单参数。"
       }
     }
   },
@@ -227,11 +326,38 @@ export const TRANSLATIONS = {
       logoutButton: "Sign out",
       profileButton: "Profile"
     },
+    locationExplorer: {
+      addressPrompt: "Enter an address",
+      addressInputPlaceholder: "Address:",
+      lightingAreaLabel: "Lighting area",
+      lightingAreaUnit: "km²",
+      lightingTimeLabel: "Duration",
+      lightingTimeHoursSuffix: "h",
+      lightingSumLabel: "Total",
+      lightingPay: "Pay",
+      lightingInsufficientFunds: "Insufficient funds",
+      reviewTitle: "Write your review",
+      reviewPlaceholder: "Your review…",
+      reviewSend: "Send",
+      reviewCancel: "Cancel",
+      reviewCloseAria: "Close",
+      reviewStarsGroupAria: "Rating from 1 to 5",
+      reviewStarAria: "Star {n} of 5",
+      searching: "Searching…",
+      noResults: "No matches",
+      searchError: "Search failed. Please try again."
+    },
     footer: {
       copyright: "® SunStrike, 2026. All rights reserved.",
       founded: "Company founded in 1994.",
       follow: "Follow us here",
       buttonAriaPrefix: "Footer button"
+    },
+    communityReviews: {
+      title: "Reviews from users",
+      empty: "No reviews yet after lighting payments.",
+      showAll: "Show all",
+      averageRatingAria: "Average user rating {score} out of 5"
     },
     modal: {
       titleRegister: "Register in SunStrike",
@@ -282,7 +408,13 @@ export const TRANSLATIONS = {
         cardExpiryLabel: "Expiry",
         cardCvcLabel: "CVC",
         amountLabel: "Amount $:",
-        pay: "Pay"
+        pay: "Pay",
+        supportPlaceholder: "Describe your issue or question…",
+        supportSend: "Send",
+        reviewsEmpty: "No reviews yet. After you pay for lighting and submit a review, it will appear here.",
+        reviewExpand: "Expand",
+        reviewCollapse: "Collapse",
+        historyEmpty: "No orders yet. After you pay for lighting, an entry will appear here with the map and details."
       }
     }
   },
@@ -296,11 +428,38 @@ export const TRANSLATIONS = {
       logoutButton: "Se deconnecter",
       profileButton: "Profil"
     },
+    locationExplorer: {
+      addressPrompt: "Entrez une adresse",
+      addressInputPlaceholder: "Adresse :",
+      lightingAreaLabel: "Surface d'eclairage",
+      lightingAreaUnit: "km²",
+      lightingTimeLabel: "Duree",
+      lightingTimeHoursSuffix: "h",
+      lightingSumLabel: "Total",
+      lightingPay: "Payer",
+      lightingInsufficientFunds: "Fonds insuffisants",
+      reviewTitle: "Ecrivez votre avis",
+      reviewPlaceholder: "Votre avis…",
+      reviewSend: "Envoyer",
+      reviewCancel: "Annuler",
+      reviewCloseAria: "Fermer",
+      reviewStarsGroupAria: "Note de 1 a 5",
+      reviewStarAria: "Etoile {n} sur 5",
+      searching: "Recherche…",
+      noResults: "Aucun resultat",
+      searchError: "Echec de la recherche. Reessayez."
+    },
     footer: {
       copyright: "® SunStrike, 2026. Tous droits reserves.",
       founded: "Entreprise fondee en 1994.",
       follow: "Suivez-nous ici",
       buttonAriaPrefix: "Bouton du pied de page"
+    },
+    communityReviews: {
+      title: "Avis des utilisateurs",
+      empty: "Pas encore d'avis apres paiement de l'eclairage.",
+      showAll: "Tout afficher",
+      averageRatingAria: "Note moyenne des utilisateurs {score} sur 5"
     },
     modal: {
       titleRegister: "Inscription a SunStrike",
@@ -352,7 +511,13 @@ export const TRANSLATIONS = {
         cardExpiryLabel: "Expiration",
         cardCvcLabel: "CVC",
         amountLabel: "Montant $ :",
-        pay: "Payer"
+        pay: "Payer",
+        supportPlaceholder: "Decrivez votre probleme ou votre question…",
+        supportSend: "Envoyer",
+        reviewsEmpty: "Pas encore d'avis. Apres paiement de l'eclairage et envoi, l'avis s'affichera ici.",
+        reviewExpand: "Developper",
+        reviewCollapse: "Reduire",
+        historyEmpty: "Pas encore de demandes. Apres paiement de l'eclairage, l'entree apparaitra ici avec la carte et les details."
       }
     }
   }
