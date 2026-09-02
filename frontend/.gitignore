@@ -11,12 +11,5 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# Image sources and generated assets
+# Raw image dumps only; committed UI lives in public/assets
 source-images/
-public/assets/
-*.png
-*.jpg
-*.jpeg
-*.webp
-*.gif
-*.svg

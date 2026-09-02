@@ -2,11 +2,11 @@ export const LANGUAGE_STORAGE_KEY = "sunstrike_language";
 export const DEFAULT_LANGUAGE = "en";
 
 export const LANGUAGES = [
-  { code: "en", name: "English", headerLabel: "Language", flag: "/assets/flag-en.webp" },
-  { code: "ru", name: "Русский", headerLabel: "Язык", flag: "/assets/flag-ru.png" },
-  { code: "de", name: "Deutsch", headerLabel: "Sprache", flag: "/assets/flag-de.jpg" },
-  { code: "zh", name: "中文", headerLabel: "语言", flag: "/assets/flag-zh.png" },
-  { code: "fr", name: "Francais", headerLabel: "Langue", flag: "/assets/flag-fr.jpeg" }
+  { code: "en", name: "English", headerLabel: "Language", flag: "/assets/flag-en.svg" },
+  { code: "ru", name: "Русский", headerLabel: "Язык", flag: "/assets/flag-ru.svg" },
+  { code: "de", name: "Deutsch", headerLabel: "Sprache", flag: "/assets/flag-de.svg" },
+  { code: "zh", name: "中文", headerLabel: "语言", flag: "/assets/flag-zh.svg" },
+  { code: "fr", name: "Francais", headerLabel: "Langue", flag: "/assets/flag-fr.svg" }
 ];
 
 export const TRANSLATIONS = {
