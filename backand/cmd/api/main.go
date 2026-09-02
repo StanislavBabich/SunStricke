@@ -256,7 +256,7 @@ func (a *app) handleRegister(w http.ResponseWriter, r *http.Request) {
 	)
 	if err != nil {
 		if strings.Contains(strings.ToLower(err.Error()), "unique") {
-			writeJSON(w, http.StatusConflict, messageResponse{Error: "пользователь с таким логином уже существует"})
+			writeJSON(w, http.StatusConflict, messageResponse{Error: "a user with this login already exists"})
 			return
 		}
 		writeJSON(w, http.StatusInternalServerError, messageResponse{Error: "failed to create user"})
@@ -320,7 +320,7 @@ func (a *app) handleLogin(w http.ResponseWriter, r *http.Request) {
 	).Scan(&userID, &username, &userEmail, &avatarData, &avatarPosX, &avatarPosY, &passwordHash)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			writeJSON(w, http.StatusUnauthorized, messageResponse{Error: "неверная почта или пароль"})
+			writeJSON(w, http.StatusUnauthorized, messageResponse{Error: "invalid email or password"})
 			return
 		}
 		writeJSON(w, http.StatusInternalServerError, messageResponse{Error: "failed to load user"})
@@ -328,7 +328,7 @@ func (a *app) handleLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(passwordHash), []byte(password)); err != nil {
-		writeJSON(w, http.StatusUnauthorized, messageResponse{Error: "неверная почта или пароль"})
+		writeJSON(w, http.StatusUnauthorized, messageResponse{Error: "invalid email or password"})
 		return
 	}
 
@@ -449,15 +449,15 @@ func (a *app) handleProfileUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if len(nickname) < 3 {
-		writeJSON(w, http.StatusBadRequest, messageResponse{Error: "никнейм должен содержать минимум 3 символа"})
+		writeJSON(w, http.StatusBadRequest, messageResponse{Error: "nickname must be at least 3 characters"})
 		return
 	}
 	if !strings.Contains(email, "@") || len(email) < 5 {
-		writeJSON(w, http.StatusBadRequest, messageResponse{Error: "укажите корректную почту"})
+		writeJSON(w, http.StatusBadRequest, messageResponse{Error: "please enter a valid email"})
 		return
 	}
 	if req.NewPassword != "" && len(strings.TrimSpace(req.NewPassword)) < 6 {
-		writeJSON(w, http.StatusBadRequest, messageResponse{Error: "пароль должен содержать минимум 6 символов"})
+		writeJSON(w, http.StatusBadRequest, messageResponse{Error: "password must be at least 6 characters"})
 		return
 	}
 
@@ -479,7 +479,7 @@ func (a *app) handleProfileUpdate(w http.ResponseWriter, r *http.Request) {
 	var existingID int64
 	err = a.db.QueryRow(`SELECT id FROM users WHERE username = ? AND id != ?`, nickname, userID).Scan(&existingID)
 	if err == nil {
-		writeJSON(w, http.StatusConflict, messageResponse{Error: "пользователь с таким никнеймом уже существует"})
+		writeJSON(w, http.StatusConflict, messageResponse{Error: "a user with this nickname already exists"})
 		return
 	}
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
@@ -538,13 +538,13 @@ func validateRegistration(req registerRequest) (string, string, string, error) {
 		return "", "", "", errors.New("login, email and password are required")
 	}
 	if len(login) < 3 {
-		return "", "", "", errors.New("логин должен содержать минимум 3 символа")
+		return "", "", "", errors.New("login must be at least 3 characters")
 	}
 	if !strings.Contains(email, "@") || len(email) < 5 {
-		return "", "", "", errors.New("укажите корректную почту")
+		return "", "", "", errors.New("please enter a valid email")
 	}
 	if len(password) < 6 {
-		return "", "", "", errors.New("пароль должен содержать минимум 6 символов")
+		return "", "", "", errors.New("password must be at least 6 characters")
 	}
 
 	return login, email, password, nil
@@ -558,7 +558,7 @@ func validateLogin(req loginRequest) (string, string, error) {
 		return "", "", errors.New("email and password are required")
 	}
 	if !strings.Contains(email, "@") || len(email) < 5 {
-		return "", "", errors.New("укажите корректную почту")
+		return "", "", errors.New("please enter a valid email")
 	}
 	return email, password, nil
 }

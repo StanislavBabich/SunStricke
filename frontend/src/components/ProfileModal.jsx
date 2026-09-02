@@ -31,7 +31,7 @@ function normalizeProfile(profile) {
 
 function dateLocaleForUi(code) {
   const map = { ru: "ru-RU", de: "de-DE", zh: "zh-CN", en: "en-US", fr: "fr-FR" };
-  return map[code] || "ru-RU";
+  return map[code] || "en-US";
 }
 
 function applyMask(template, digits, placeholder = "*") {
@@ -49,7 +49,7 @@ export default function ProfileModal({
   userProfile,
   userReviews = [],
   userApplications = [],
-  languageCode = "ru",
+  languageCode = "en",
   onSaveProfile,
   onTopUpBalance,
   translations
@@ -316,7 +316,7 @@ export default function ProfileModal({
       setPasswordTouched(false);
       setActiveSection("profile");
     } catch (saveError) {
-      setError(saveError.message || "Ошибка сохранения");
+      setError(saveError.message || "Failed to save");
     } finally {
       setIsSaving(false);
     }

@@ -6,7 +6,7 @@ import InfoSection from "./components/InfoSection";
 import LocationExplorer from "./components/LocationExplorer";
 import Footer from "./components/Footer";
 import { getInfoBlocks } from "./data/blocks";
-import { LANGUAGE_STORAGE_KEY, TRANSLATIONS } from "./data/i18n";
+import { DEFAULT_LANGUAGE, LANGUAGE_STORAGE_KEY, TRANSLATIONS } from "./data/i18n";
 import { forceLogoutLocal, getCurrentUser, logoutUser, updateProfile } from "./api";
 import { circleRadiusMFromAreaKm2 } from "./lib/lightingZone";
 import { prependCommunityReview, readCommunityReviews } from "./lib/communityReviews";
@@ -123,7 +123,7 @@ export default function App() {
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [authModalMode, setAuthModalMode] = useState("register");
-  const [languageCode, setLanguageCode] = useState("ru");
+  const [languageCode, setLanguageCode] = useState(DEFAULT_LANGUAGE);
   const [visibleBlocks, setVisibleBlocks] = useState({});
   const [isFooterVisible, setIsFooterVisible] = useState(false);
   const [isFooterIntroActive, setIsFooterIntroActive] = useState(true);
@@ -172,6 +172,10 @@ export default function App() {
       setLanguageCode(savedLanguage);
     }
   }, []);
+
+  useEffect(() => {
+    document.documentElement.lang = languageCode;
+  }, [languageCode]);
 
   useEffect(() => {
     if (isAuthorized && !isCheckingSession) {
@@ -401,7 +405,7 @@ export default function App() {
     localStorage.setItem(LANGUAGE_STORAGE_KEY, nextLanguageCode);
   };
 
-  const translations = TRANSLATIONS[languageCode] || TRANSLATIONS.ru;
+  const translations = TRANSLATIONS[languageCode] || TRANSLATIONS[DEFAULT_LANGUAGE];
   const infoBlocks = getInfoBlocks(languageCode);
 
   return (

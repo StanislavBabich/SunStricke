@@ -137,5 +137,5 @@ export const infoBlocksByLanguage = {
 };
 
 export function getInfoBlocks(languageCode) {
-  return infoBlocksByLanguage[languageCode] || infoBlocksByLanguage.ru;
+  return infoBlocksByLanguage[languageCode] || infoBlocksByLanguage.en;
 }

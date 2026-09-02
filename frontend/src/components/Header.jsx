@@ -66,7 +66,7 @@ export default function Header({
         </div>
 
         <a className="brand" href="/">
-          <img className="brand__logo" src="/assets/logo.svg" alt="Логотип SunStrike" />
+          <img className="brand__logo" src="/assets/logo.svg" alt="SunStrike logo" />
           <span className="brand__name">SunStrike</span>
         </a>
 
